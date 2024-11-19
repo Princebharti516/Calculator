@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculator</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+  <main>
+    <h3>Prince Raj Goswami</h3>
+    <input type="text" id="display" readonly />
+
+    <!-- Button container -->
+    <div class="button-container">
+      <button type="button">AC</button>
+      <button type="button">%</button>
+      <button type="button">.</button>
+      <button type="button">=</button>
+
+      <button type="button">1</button>
+      <button type="button">2</button>
+      <button type="button">3</button>
+      <button type="button">+</button>
+
+      <button type="button">4</button>
+      <button type="button">5</button>
+      <button type="button">6</button>
+      <button type="button">-</button>
+
+      <button type="button">7</button>
+      <button type="button">8</button>
+      <button type="button">9</button>
+      <button type="button">0</button>
+    </div>
+  </main>
+
+  <script>
+    const display = document.getElementById('display');
+    const buttons = document.querySelectorAll('button');
+
+    let currentInput = ''; // current input being typed
+    let operator = ''; // store the operator (+, -, etc.)
+    let expression = ''; // store the full expression
+
+    // Reset the display and clear all variables
+    function reset() {
+      currentInput = '';
+      operator = '';
+      expression = '';
+      display.value = '';
+    }
+
+    // Handle button clicks
+    buttons.forEach(button => {
+      button.addEventListener('click', () => {
+        const value = button.textContent;
+
+        if (value === 'AC') {
+          reset(); // Clear everything
+        } else if (value === '=') {
+          // Only calculate if there's a valid expression
+          if (expression && currentInput) {
+            try {
+              // Complete the expression and evaluate it
+              expression += currentInput; // Add the last input to expression
+              currentInput = eval(expression).toString();
+              display.value = currentInput; // Display result
+              expression = ''; // Clear the expression after calculation
+            } catch (e) {
+              display.value = "Error"; // Handle invalid operations
+            }
+          }
+        } else if (['+', '-', '*', '/'].includes(value)) {
+          if (currentInput === '') return; // Don't press operator if no number entered
+
+          // If operator pressed, complete the expression with current number and operator
+          if (expression === '') {
+            expression = currentInput + value; // Start new expression
+          } else {
+            expression += currentInput + value; // Append to existing expression
+          }
+          display.value = expression; // Show expression
+          currentInput = ''; // Clear current input for the next number
+        } else if (value === '%') {
+          if (currentInput) {
+            currentInput = (parseFloat(currentInput) / 100).toString();
+            display.value = currentInput; // Display percentage result
+          }
+        } else {
+          // Append the value (number or decimal) to the current input
+          currentInput += value;
+          display.value = currentInput; // Update display with current input
+        }
+      });
+    });
+  </script>
+</body>
+
+</html>
